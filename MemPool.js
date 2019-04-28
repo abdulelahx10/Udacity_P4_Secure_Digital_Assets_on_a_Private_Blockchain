@@ -21,7 +21,7 @@ class MemPool {
             let timeElapse = (new Date().getTime().toString().slice(0,-3)) - self.mempool[address].requestTimeStamp;
             let timeLeft = (TIME_REQUEST_WINDOW_TIME/1000) - timeElapse;
             self.mempool[address].validationWindow = timeLeft;
-            return JSON.parse(self.mempool[address]);
+            return self.mempool[address];
         }
         else{
             let timeStamp = new Date().getTime().toString().slice(0,-3);
@@ -33,7 +33,7 @@ class MemPool {
             };
             self.mempool[address] = req;
             self.timeoutRequests[address] = setTimeout(function(){ delete self.mempool[address] }, TIME_REQUEST_WINDOW_TIME );
-            return JSON.parse(req);
+            return req;
         }
     }
 
@@ -59,7 +59,7 @@ class MemPool {
                 delete self.mempool[payload.address];
                 self.mempoolValid[payload.address] = result;
                 self.timeoutRequestsValid[payload.address] = setTimeout(function(){ delete self.mempoolValid[payload.address] }, TIME_REQUEST_VALID_WINDOW_TIME );
-                return JSON.parse(result);
+                return result;
             }
             return "ERROR: message Signature is invalid"
         }
@@ -76,7 +76,7 @@ class MemPool {
             let blockProm = await BlockChain.addBlock(block);
             clearTimeout(self.timeoutRequestsValid[payload.address]);
             delete self.mempoolValid[payload.address];
-            return JSON.parse(blockProm);
+            return blockProm;
         }
         return "ERROR: Address is not valid in the mempool";
     }

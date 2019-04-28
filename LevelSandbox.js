@@ -40,7 +40,7 @@ class LevelSandbox {
                     console.log('Block ' + key + ' submission failed', err);
                     reject(err);
                 }
-                resolve(value);
+                resolve(JSON.parse(value));
             });
         });
     }
