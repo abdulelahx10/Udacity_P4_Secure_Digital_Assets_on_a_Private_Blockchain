@@ -27,7 +27,7 @@ class Blockchain {
                 block.time = new Date().getTime().toString().slice(0, -3);
                 block.hash = SHA256(JSON.stringify(block)).toString();
                 self.db.addLevelDBData(block.height, JSON.stringify(block).toString()).then((result) => {
-                    console.log(`Genesis block created:\n ${result}`);
+                    console.log(`Genesis block created:\n ${JSON.stringify(result).toString()}`);
                 }).catch((err) => {
                     console.log(err);
                 });
@@ -49,7 +49,7 @@ class Blockchain {
             self.getBlockHeight().then((count) => {
                 block.height = count;
                 block.time = new Date().getTime().toString().slice(0, -3);
-                self.getBlock(block.height - 1).then((previousBlock) => {
+                self.getBlockByHeight(block.height - 1).then((previousBlock) => {
                     block.previousBlockHash = previousBlock.hash;
                     block.hash = SHA256(JSON.stringify(block)).toString();
                     self.db.addLevelDBData(block.height, JSON.stringify(block).toString()).then((result) => {
@@ -106,7 +106,7 @@ class Blockchain {
     validateBlock(height) {
         let self = this;
         return new Promise(function (resolve, reject) {
-            self.getBlock(height).then((block) => {
+            self.getBlockByHeight(height).then((block) => {
                 let hash = block.hash;
                 block.hash = "";
                 let generateHash = SHA256(JSON.stringify(block)).toString();
@@ -129,7 +129,7 @@ class Blockchain {
         let previousBlockHash = "";
         await self.getBlockHeight().then(async (length) => {
             for (let index = 0; index < length; index++) {
-                await self.getBlock(index).then((block) => {
+                await self.getBlockByHeight(index).then((block) => {
                     self.validateBlock(index).then((value) => {
                         if (!value && block.hash !== previousBlockHash) { // Check if this block is vaild and the "hash" of the block equal the "previousBlockHash" of the previous block (validate block and validate link between them)
                             invalidPromises.push(Promise.resolve(`invalid block #: ${index}`));

@@ -3,9 +3,9 @@ const MemPool = require('./MemPool.js');
 
 class MemPoolController{
 
-    constructor(server) {
+    constructor(server, myBC) {
         this.server = server;
-        this.myMemPool = new MemPool.MemPool();
+        this.myMemPool = new MemPool.MemPool(myBC);
         this.postRequestValidation();
         this.postValidateRequestByWallet();
         this.postNewBlock();
@@ -69,6 +69,6 @@ class MemPoolController{
     }
 }
 
-module.exports = (server) => {
-    return new MemPoolController(server);
+module.exports = (server, myBC) => {
+    return new MemPoolController(server, myBC);
 }

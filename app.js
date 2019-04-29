@@ -21,8 +21,8 @@ class BlockAPI {
      * Initilization of all the controllers
      */
 	initControllers() {
-        require("./BlockController.js")(this.server);
-        require("./MemPoolController.js")(this.server);
+        let blockController = require("./BlockController.js")(this.server);
+        require("./MemPoolController.js")(this.server, blockController.myBlockChain);
 	}
     
     async start() {

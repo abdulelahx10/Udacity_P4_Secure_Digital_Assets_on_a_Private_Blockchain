@@ -1,11 +1,13 @@
 const bitcoinMessage = require('bitcoinjs-message');
-const BlockChain = require('./Blockchain.js');
+const Block = require('./Block.js');
+const BlockChain = require('./BlockChain.js');
 const TIME_REQUEST_WINDOW_TIME = 5*60*1000; // 5 minutes
 const TIME_REQUEST_VALID_WINDOW_TIME = 30*60*1000; // 30 minutes
 
 class MemPool {
 
-    constructor() {
+    constructor(myBC) {
+        this.myBC = myBC;
         this.mempool = {};
         this.mempoolValid = {};
         this.timeoutRequests = {};
@@ -70,10 +72,10 @@ class MemPool {
 
     async addBlock(payload){
         let self = this;
-        if (typeof(this.mempoolValid[payload.address]) !== "undefined") {
+        if (typeof(self.mempoolValid[payload.address]) !== "undefined") {
             let block = new Block.Block(payload);
             block.body.star.story = Buffer.from(payload.star.story).toString('hex');
-            let blockProm = await BlockChain.addBlock(block);
+            let blockProm = await self.myBC.addBlock(block);
             clearTimeout(self.timeoutRequestsValid[payload.address]);
             delete self.mempoolValid[payload.address];
             return blockProm;

@@ -1,6 +1,6 @@
 const Joi = require('joi');
 const Block = require('./Block.js');
-const BlockChain = require('./Blockchain.js');
+const BlockChain = require('./BlockChain.js');
 
 /**
  * Controller Definition to encapsulate routes to work with blocks
